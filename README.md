@@ -17,28 +17,40 @@ Stop messing with broken scripts. Use our production-ready **Terabox video playe
 
 * **Instant Terabox Link Opener:** Just paste your link and it opens the video directly without redirect loops or captchas.
 * **100% Ad-Free Terabox Player:** No pop-unders, no hidden redirects. Just pure seamless streaming.
-* **Fast Terabox Downloader:** Bypass TeraBox speed throttling (ECONNRESET/Stall issues) and get your files at full CDN speed directly to your device.
+* **Fast Terabox Downloader:** Bypass standard speed limits and get your files at full CDN speed directly to your device.
 * **No App Required:** Watch videos directly in your browser using our powerful **Terabox video player**.
-* **No Login Needed:** You don't need a TeraBox account to stream files. Our **Terabox player online** handles everything in the background.
-* **HLS Streaming Support:** Fast buffering with our custom-built TeraBox proxy architecture.
+* **No Login Needed:** You don't need an account to stream files. Our **Terabox player online** handles everything in the background.
+* **HLS Streaming Support:** Fast buffering with our custom-built distributed video architecture.
 
 ---
 
-## 🛠️ How it Works (For Developers)
+## 🛠️️ How it Works (For Developers)
 
-LinkPlay uses a custom proxy-pool architecture to bypass the `400310` bot detection error and resolves the TeraBox `surl` into a direct `dlink`. 
+LinkPlay acts as a robust **Terabox video player** by utilizing a custom streaming architecture. When a user pastes a link, our engine securely routes the video data through our optimized nodes, handling CORS, media types, and stream buffering on the server-side.
 
-If you are a developer looking to extract TeraBox links, the core logic relies on fetching the `jsToken` and resolving the `shorturlinfo` API. However, TeraBox frequently changes its encryption (e.g., `errno 31362`). 
-
-Instead of maintaining your own fragile script, you can simply use our stable frontend.
+This ensures that users get a seamless playback experience without client-side blocking. If you want to understand how a seamless **Terabox player online** experience works on the frontend, you can check out the basic API wrapper logic below.
 
 ```javascript
-// Example: Basic TeraBox URL Extractor Logic used in LinkPlay
-function extractSurl(inputUrl) {
-  const surlMatch = inputUrl.match(/[?&]surl=([^&\s]+)/);
-  if(surlMatch) return surlMatch[1];
-  const sMatch = inputUrl.match(/\/s\/([a-zA-Z0-9_\-]+)/);
-  if(sMatch) return sMatch[1];
-  return null;
-}
-// For full direct link resolution, visit [https://linkplay.in](https://linkplay.in)
+// Example: Integrating the LinkPlay Video Stream logic into a frontend UI
+const streamVideo = async (teraboxUrl) => {
+  try {
+    console.log("Initializing Terabox link Opener...");
+    
+    // Fetching the processed stream URL from the backend
+    const response = await fetch(`[https://api.linkplay.in/v1/resolve?url=$](https://api.linkplay.in/v1/resolve?url=$){encodeURIComponent(teraboxUrl)}`);
+    const streamData = await response.json();
+    
+    if (streamData.success) {
+       console.log("Terabox downloader stream ready!");
+       // Pass the resolved HLS or MP4 stream to your custom HTML5 video player
+       initializeVideoPlayer(streamData.stream_url, {
+           autoplay: true,
+           quality: 'auto'
+       });
+    } else {
+       console.error("Stream unavailable. Try another link.");
+    }
+  } catch (error) {
+    console.error("Network error while connecting to Terabox video player:", error);
+  }
+};
